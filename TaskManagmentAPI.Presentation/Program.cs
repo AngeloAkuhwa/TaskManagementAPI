@@ -34,6 +34,8 @@ try
 	builder.Services.Configure<RedisSettings>(options =>
 	{
 		options.ConnectionString = builder.Configuration["RedisSettings:ConnectionString"]!;
+		options.Password = builder.Configuration["RedisSettings:Password"]!;
+		options.SyncTimeOut = int.Parse(builder.Configuration["RedisSettings:SyncTimeOut"]!);
 		options.SlidingExpiration = TimeSpan.Parse(builder.Configuration["RedisSettings:SlidingExpiration"]!);
 		options.AbsoluteExpiration = TimeSpan.Parse(builder.Configuration["RedisSettings:AbsoluteExpiration"]!);
 	});
@@ -79,7 +81,9 @@ try
 			options.ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions
 			{
 				AbortOnConnectFail = true,
-				EndPoints = { redisSettings.ConnectionString }
+				EndPoints = { redisSettings.ConnectionString },
+				Password = redisSettings.Password,
+				SyncTimeout = redisSettings.SyncTimeOut
 			};
 		}
 	});
