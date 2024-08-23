@@ -18,7 +18,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 6.0.x
 
       - name: Restore dependencies
         run: dotnet restore
@@ -39,9 +39,9 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 6.0.x
 
       - name: Deploy to Heroku
-        run: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/taskmanagementapi-angeloakuhwa.git HEAD:main
+        run: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/taskmanagementapi-angeloakuhwa.git HEAD:master
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
