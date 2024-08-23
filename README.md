@@ -85,4 +85,161 @@ This project is a Task Management Application built using React.js for the front
 
 ## Running on Heroku
 
-**Create a Heroku App:** - **Login to Heroku in the web environment:** - create you heroku application - Set Environment Variables: - Set your MongoDB, Redis, and other environment variables using the Heroku CLI or Heroku dashboard. - Ensure your .Procfile is correctly configured and push your code to Heroku
+### 1. Create a Heroku App
+
+- **Login to Heroku:**  
+  Open your web browser and navigate to [Heroku](https://www.heroku.com/). Log in with your credentials.
+- **Create a New Application:**  
+  Once logged in, click on the "New" button in the dashboard and select "Create new app."
+  - Enter a unique name for your application.
+  - Choose the appropriate region.
+
+### 2. Set Up Configuration Environment Variables
+
+- **Add Environment Variables:**
+  - Go to the "Settings" tab of your newly created application.
+  - Click on "Reveal Config Vars" to view and add your environment variables.
+  - **MongoDB:**
+    - Add a `MongoDBSettings:ConnectionString` environment variable with your MongoDB connection string. This string should include your username, password, and database name.
+    - Add a `MongoDBSettings:DatabaseName` environment variable to specify the name of the database.
+    - **Note:** Ensure you have configured IP access for your MongoDB cluster to allow Heroku to connect.
+  - **Redis:**
+    - Add a `RedisSettings:ConnectionString` environment variable with your Redis connection string. This should include the host and port.
+    - Add a `RedisSettings:Password` environment variable if your Redis instance is password-protected.
+    - Add a `RedisSettings:SyncTimeOut` environment variable with the sync timeout value (in milliseconds).
+    - **Note:** Configure a Redis cloud cluster if you haven't already, and ensure your connection settings are correct.
+
+### 3. Set Up MongoDB on Heroku
+
+- **MongoDB Configuration:**
+
+  - **Cluster Creation:**  
+    If you haven't already, create a MongoDB cluster using MongoDB Atlas or another cloud provider.
+  - **Network Access:**  
+    Add Heroku's IP range or set network access to allow connections from anywhere. This is essential to ensure your Heroku app can connect to the MongoDB cluster.
+  - **Database Name:**  
+    Make sure the database name you intend to use is correctly set in your environment variables.
+
+- ### 3. Configure Redis on Heroku
+
+- **Set Up a Redis Instance:**
+
+  - Use a service like [Redis Cloud](https://redis.com/redis-enterprise-cloud/overview/) to create a Redis instance.
+  - Obtain the Redis connection details including the connection string, port, and password.
+
+- **Add Redis Connection Details to Heroku Config Vars:**
+
+  - In the "Settings" tab of your Heroku app, add the following environment variables:
+    ```plaintext
+    Key: RedisSettings:ConnectionString
+    Value: <your-redis-connection-string>
+    ```
+  - Add the sliding expiration and absolute expiration settings:
+
+    ```plaintext
+    Key: RedisSettings:SlidingExpiration
+    Value: 12:00:00
+    ```
+
+    ```plaintext
+    Key: RedisSettings:AbsoluteExpiration
+    Value: 24:00:00
+    ```
+
+    ```plaintext
+    Key: RedisSettings:SyncTimeOut
+    Value: <your-sync-timeout-in-ms>
+    ```
+
+### 4. Configure the .Procfile
+
+- Ensure that your `.Procfile` is correctly configured to start your .NET application on Heroku. For example:
+  ```plaintext
+  web: dotnet run --urls=http://0.0.0.0:${PORT} -c Release
+  ```
+
+### 5. Set Up Buildpack
+
+- **Add the .NET Core Buildpack:**
+  - Before deploying your .NET Core application, ensure the correct buildpack is set. Use the following command to set the buildpack to `jincod/dotnetcore`:
+    ```bash
+    heroku buildpacks:set jincod/dotnetcore
+    ```
+
+### 6. Allow Swagger in Production (Optional)
+
+- **Enable Swagger in Production for API Documentation:**
+
+  - To allow Swagger to run in production, you can modify your application to include the following in the `Program.cs` or `Startup.cs`:
+    ```csharp
+    if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Task Management API V1");
+        });
+    }
+    ```
+  - This ensures that Swagger is available in both development and production environments, providing good documentation for your API.
+
+- **Trigger Swagger UI:**
+  - After deployment, you can access the Swagger UI by navigating to the following URL:
+    ```plaintext
+    https://<your-app-name>.herokuapp.com/swagger/index.html
+    ```
+  - Replace `<your-app-name>` with the name of your Heroku application.
+
+### 7. Deploy to Heroku
+
+- **Push Your Code:**
+
+  - Use Git to deploy your code to Heroku:
+
+    ```set up a CI yaml file to sync up with heroku
+
+    ```
+
+- **Monitor Deployment:**
+  - Watch the deployment logs in the Heroku dashboard or using the Heroku CLI to ensure the deployment is successful:
+    ```bash
+    heroku logs --tail --app yourapplicationname
+    ```
+
+### 8. Access Your Application
+
+- **Open the Application:**
+  - Once the deployment is successful, you can access your application using the URL provided by Heroku:
+    ```plaintext
+    https://<your-app-name>.herokuapp.com
+    ```
+  - Replace `<your-app-name>` with the name of your Heroku application.
+
+### 9. Monitor Application Health and Logs
+
+- **Check Application Logs:**
+
+  - Use the Heroku CLI to monitor your application’s logs in real-time:
+    ```bash
+    heroku logs --tail --app yourapplicationname
+    ```
+
+- **Monitor Application Health:**
+  - Use Heroku’s dashboard to check the health metrics of your application. Navigate to the “Metrics” tab in the Heroku dashboard for detailed insights.
+
+### 10. Debugging and Troubleshooting
+
+- **Check Config Variables:**
+
+  - If you encounter issues, ensure that all the necessary environment variables are correctly set in the Heroku config vars.
+
+- **Check Buildpacks:**
+
+  - Ensure that the correct buildpacks are configured for your .NET Core application. You can verify this in the “Settings” tab under “Buildpacks” in your Heroku dashboard.
+
+- **Check Network and Firewall Rules:**
+
+  - Ensure that your MongoDB and Redis instances are accessible from Heroku by reviewing any network or firewall rules that might be in place.
+
+- **Review Heroku Documentation for more details:**
+  - For further troubleshooting and detailed guidance, refer to the [Heroku documentation](https://devcenter.heroku.com/).
