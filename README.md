@@ -67,6 +67,7 @@ This project is a Task Management Application built using React.js for the front
 
 - **Node.js** and **npm** installed on your machine for the frontend.
 - **.NET Core SDK 6.0** installed on your machine.
+  - Note: The choice of using .NET 6 rather than the latest stable version (.NET 8) is due to deployment platform limitations on Heroku.
 - **MongoDB** and **Redis** instances running locally or in the cloud.
 
 ### Installation
